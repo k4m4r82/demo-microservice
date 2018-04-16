@@ -1,0 +1,84 @@
+version: "3"
+
+volumes:
+  pgdata:
+  rabbitmqdata:
+
+services:
+
+  book-store-db:
+    image: rudi/book-store-db
+    build:
+      context: ./BookStore.Database
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USER=postgres   
+      - POSTGRES_PASSWORD=masterkey
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  
+  rabbitmq:
+    image: rabbitmq:3-management    
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=rahasia
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq     
+
+  book-catalog-service:
+    image: rudi/book-catalog-service
+    build:
+      context: ./BookStore.BookCatalogService
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_HOST=book-store-db
+      - POSTGRES_PORT=5432
+    depends_on:
+      - book-store-db
+
+  customer-service:
+    image: rudi/customer-service
+    build:
+      context: ./BookStore.CustomerService
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - POSTGRES_HOST=book-store-db
+      - POSTGRES_PORT=5432      
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=rahasia
+    depends_on:
+      - book-store-db
+      - rabbitmq
+    restart: on-failure       
+  
+  order-service:
+    image: rudi/order-service
+    build:
+      context: ./BookStore.OrderService
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - POSTGRES_HOST=book-store-db
+      - POSTGRES_PORT=5432      
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=rahasia
+    depends_on:
+      - book-store-db
+      - rabbitmq
+    restart: on-failure
+      
+  api-gateway-service:
+    image: rudi/api-gateway-service
+    build:
+      context: ./BookStore.APIGatewayService
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports: 
+      - 9000:80
+    depends_on:
+      - book-catalog-service
+      - customer-service
+      - order-service
+        

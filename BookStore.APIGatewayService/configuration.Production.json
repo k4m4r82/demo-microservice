@@ -1,0 +1,44 @@
+﻿{
+  "ReRoutes": [
+    { // service customer
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "customer-service", // nama container di docker
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/customer/{everything}", // endpoin service customer
+      "UpstreamPathTemplate": "/customer/{everything}", // endpoin api gateway
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    { // service book catalog
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "book-catalog-service", // nama container di docker
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/bookcatalog/{everything}", // endpoin service book catalog
+      "UpstreamPathTemplate": "/book/{everything}", // endpoin api gateway
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    { // service order
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "order-service", // nama container di docker
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/order/{everything}", // endpoin service book catalog
+      "UpstreamPathTemplate": "/order/{everything}", // endpoin api gateway
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    }
+  ],
+
+  "GlobalConfiguration": {
+    "RequestIdKey": "ot-traceid"
+  }
+}

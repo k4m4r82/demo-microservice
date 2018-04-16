@@ -1,0 +1,44 @@
+﻿{
+  "ReRoutes": [
+    { // service customer
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 55267
+        }
+      ],
+      "DownstreamPathTemplate": "/api/customer/{everything}", // endpoin service customer
+      "UpstreamPathTemplate": "/customer/{everything}", // endpoin api gateway
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    { // service book catalog
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 63858
+        }
+      ],
+      "DownstreamPathTemplate": "/api/bookcatalog/{everything}", // endpoin service book catalog
+      "UpstreamPathTemplate": "/book/{everything}", // endpoin api gateway
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    { // service order
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 59297
+        }
+      ],
+      "DownstreamPathTemplate": "/api/order/{everything}", // endpoin service book catalog
+      "UpstreamPathTemplate": "/order/{everything}", // endpoin api gateway
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    }
+  ],
+
+  "GlobalConfiguration": {
+    "RequestIdKey": "ot-traceid"
+  }
+}
