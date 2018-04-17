@@ -40,10 +40,10 @@ namespace BookStore.OrderService.Controllers
 
     [Route("api/[controller]")]
     public class OrderController : Controller, IOrderController
-    {        
+    {
         private readonly IBus _bus;
         private readonly IOptions<RabbitMQSettings> _rabbitMQSettings;
-        private readonly IOrderRepository _repository;        
+        private readonly IOrderRepository _repository;
 
         public OrderController(IOrderRepository repository, IOptions<RabbitMQSettings> rabbitMQSettings, IBus bus)
         {
@@ -63,7 +63,7 @@ namespace BookStore.OrderService.Controllers
                 {
                     var result = await _repository.Add(order);
                     return Ok(new { result = result });
-                }                
+                }
                 else
                     return BadRequest();
             }
@@ -119,6 +119,8 @@ namespace BookStore.OrderService.Controllers
 
             return Ok(listOfOrder);
         }
+
+    }
 
     class MassTransitHelper<TRequest, TResponse>
         where TRequest : class
